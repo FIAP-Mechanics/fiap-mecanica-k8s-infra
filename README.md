@@ -111,8 +111,8 @@ variable opcional. Para atualizar apenas as credenciais AWS com o script, use
 gera novas senhas compartilhadas quando elas não são informadas; preserve as senhas de ambientes já implantados.
 
 Este é o **primeiro** deploy da sequência. Depois de ele terminar com sucesso, execute banco, Lambda e aplicação, nessa
-ordem. Veja o [guia de deploy dos quatro repositórios](https://github.com/FIAP-Mechanics/fiap-mecanica/blob/main/DEPLOY.md)
-para a tabela completa de secrets e os passos de validação.
+ordem. Veja o [README da aplicação](https://github.com/FIAP-Mechanics/fiap-mecanica#deploy-na-aws-aws-academy) para a tabela
+completa de secrets e os passos de validação dos quatro repositórios.
 
 Regras do repositório: `main` e `homologacao` protegidas (sem commit direto, pull request, aprovação e checks de CI
 obrigatórios). O convite de colaboração de `soat-architecture` precisa ser aceito antes da entrega.
