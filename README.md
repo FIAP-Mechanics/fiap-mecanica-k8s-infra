@@ -97,8 +97,25 @@ Validação sem credenciais: `terraform fmt -check && terraform init -backend=fa
   `NEW_RELIC_API_KEY`, `NEW_RELIC_ACCOUNT_ID`. Variables: `TF_STATE_BUCKET`, `AWS_REGION`, `ALERT_EMAIL`.
   `scripts/aws-lab-secrets.sh <ambiente>` configura tudo nos 4 repositórios.
 
-Regras do repositório: `main` e `homologacao` protegidas (sem commit direto, pull request obrigatório), configuradas por
-`scripts/github-governanca.sh`. O usuário `soat-architecture` tem acesso de leitura.
+### Configurar os Environments do GitHub
+
+Cada repositório tem seus próprios Environments `homologacao` e `producao`: os secrets deste repositório não são herdados do
+`fiap-mecanica`. Antes de executar [Deploy](.github/workflows/deploy.yml), cadastre no Environment escolhido os secrets
+`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` e `AWS_SESSION_TOKEN` da sessão ativa do Learner Lab. Confira a variable
+`TF_STATE_BUCKET`, com o mesmo nome de bucket nos quatro repositórios; os states continuam separados por componente e ambiente.
+`AWS_REGION` é opcional e usa `us-east-1` por padrão.
+
+O job `observability` só executa quando `NEW_RELIC_API_KEY` e `NEW_RELIC_ACCOUNT_ID` estão presentes. `ALERT_EMAIL` é uma
+variable opcional. Para atualizar apenas as credenciais AWS com o script, use
+`RENOVAR_APENAS_CREDENCIAIS=1 scripts/aws-lab-secrets.sh <ambiente>` com o perfil AWS ativo. Uma execução completa do script
+gera novas senhas compartilhadas quando elas não são informadas; preserve as senhas de ambientes já implantados.
+
+Este é o **primeiro** deploy da sequência. Depois de ele terminar com sucesso, execute banco, Lambda e aplicação, nessa
+ordem. Veja o [guia de deploy dos quatro repositórios](https://github.com/FIAP-Mechanics/fiap-mecanica/blob/main/DEPLOY.md)
+para a tabela completa de secrets e os passos de validação.
+
+Regras do repositório: `main` e `homologacao` protegidas (sem commit direto, pull request, aprovação e checks de CI
+obrigatórios). O convite de colaboração de `soat-architecture` precisa ser aceito antes da entrega.
 
 ### Ordem de provisionamento
 
