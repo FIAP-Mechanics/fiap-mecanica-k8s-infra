@@ -3,6 +3,8 @@
 Infraestrutura Kubernetes da Oficina Mecânica (Tech Challenge, Fase 3), provisionada com Terraform na AWS. É o **repositório 2 de 4**
 e a base dos demais: a rede e o cluster EKS são criados aqui, e os repositórios do banco e da Lambda leem seus outputs pelo state remoto.
 
+**APIs:** [collection Postman](https://github.com/FIAP-Mechanics/fiap-mecanica/blob/main/postman/mecanica-completa.postman_collection.json) · [OpenAPI da Lambda](https://github.com/FIAP-Mechanics/fiap-mecanica-lambda/blob/main/openapi.yaml).
+
 | Repositório | Papel |
 |---|---|
 | **fiap-mecanica-k8s-infra** (este) | VPC, cluster EKS com escalabilidade, dashboards e alertas de observabilidade |
@@ -93,9 +95,10 @@ Validação sem credenciais: `terraform fmt -check && terraform init -backend=fa
 - `ci.yml`: em pull request para `main` ou `homologacao`, roda `fmt -check`, `init -backend=false` e `validate` na raiz e em `observability/`.
 - `deploy.yml`: um push em `homologacao` aplica o ambiente de **homologação**; um push em `main` aplica **produção** (Environment
   `producao` com aprovação). Aplica o EKS e depois `observability/` (este só se `NEW_RELIC_API_KEY` e `NEW_RELIC_ACCOUNT_ID` existirem).
-- Secrets do Environment: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN` (renovados a cada sessão do lab),
-  `NEW_RELIC_API_KEY`, `NEW_RELIC_ACCOUNT_ID`. Variables: `TF_STATE_BUCKET`, `AWS_REGION`, `ALERT_EMAIL`.
-  `scripts/aws-lab-secrets.sh <ambiente>` configura tudo nos 4 repositórios.
+- Em `Settings > Environments > homologacao` ou `producao`, configure os secrets `AWS_ACCESS_KEY_ID`,
+  `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN` e a variable `TF_STATE_BUCKET`. `AWS_REGION` é opcional e usa `us-east-1` por padrão.
+- Para dashboards e alertas, configure também os secrets `NEW_RELIC_API_KEY` e `NEW_RELIC_ACCOUNT_ID` e a variable `ALERT_EMAIL`.
+  Cada repositório possui seus próprios Environments. O script `aws-lab-secrets.sh` pode gerar novas senhas; preserve as existentes em ambientes já implantados.
 
 Regras do repositório: `main` e `homologacao` protegidas (sem commit direto, pull request obrigatório), configuradas por
 `scripts/github-governanca.sh`. O usuário `soat-architecture` tem acesso de leitura.
@@ -110,16 +113,11 @@ fiap-mecanica-lambda → fiap-mecanica. Para destruir, a ordem inversa: `scripts
 
 Não aplicável: este repositório contém apenas Terraform e scripts, sem imagem própria.
 
-## Swagger/Postman das APIs
-
-Este repositório não expõe API. As APIs ficam no repositório da aplicação:
-[collection Postman](https://github.com/FIAP-Mechanics/fiap-mecanica/blob/main/postman/mecanica-completa.postman_collection.json)
-e Swagger de cada serviço em `/swagger-ui.html`. A function de CPF está documentada em
-[`openapi.yaml`](https://github.com/FIAP-Mechanics/fiap-mecanica-lambda/blob/main/openapi.yaml).
-
 ## Deploys ativos
 
 | Ambiente | Cluster | Dashboard New Relic |
 |---|---|---|
-| Homologação | `mecanica-homologacao` | _preencher após o deploy_ |
-| Produção | `mecanica-producao` | _preencher após o deploy_ |
+| Homologação | Não confirmado | Não confirmado |
+| Produção | Não confirmado | Não confirmado |
+
+Consulte os [deploys no GitHub Actions](https://github.com/FIAP-Mechanics/fiap-mecanica-k8s-infra/actions/workflows/deploy.yml).
